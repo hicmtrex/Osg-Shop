@@ -1,6 +1,6 @@
-import React, { useState, useEffect } from "react";
-import { Link } from "react-router-dom";
-import { useDispatch, useSelector } from "react-redux";
+import React, { useState, useEffect } from 'react';
+import { Link } from 'react-router-dom';
+import { useDispatch, useSelector } from 'react-redux';
 import {
   Row,
   Col,
@@ -9,21 +9,21 @@ import {
   Card,
   Button,
   Form,
-} from "react-bootstrap";
-import Rating from "../components/Rating";
-import Message from "../components/Message";
-import Loader from "../components/Loader";
-import Meta from "../components/Meta";
+} from 'react-bootstrap';
+import Rating from '../components/Rating';
+import Message from '../components/Message';
+import Loader from '../components/Loader';
+import Meta from '../components/Meta';
 import {
   listProductDetails,
   createProductReview,
-} from "../actions/productActions";
-import { PRODUCT_CREATE_REVIEW_RESET } from "../constants/productConstants";
+} from '../actions/productActions';
+import { PRODUCT_CREATE_REVIEW_RESET } from '../constants/productConstants';
 
 const ProductScreen = ({ history, match }) => {
   const [qty, setQty] = useState(1);
   const [rating, setRating] = useState(0);
-  const [comment, setComment] = useState("");
+  const [comment, setComment] = useState('');
 
   const dispatch = useDispatch();
 
@@ -43,7 +43,7 @@ const ProductScreen = ({ history, match }) => {
   useEffect(() => {
     if (successProductReview) {
       setRating(0);
-      setComment("");
+      setComment('');
     }
     if (!product._id || product._id !== match.params.id) {
       dispatch(listProductDetails(match.params.id));
@@ -77,30 +77,62 @@ const ProductScreen = ({ history, match }) => {
       ) : (
         <>
           <Meta title={product.name} />
-          <Row>
+          <Row className='mt-2'>
+            <Col
+              style={{ background: '#d9230f', color: 'white' }}
+              className='rounded shadow  p-3 ms-3'
+              md={1}
+            >
+              {product.vRam}
+            </Col>
+            <Col
+              style={{ background: '#d9230f', color: 'white' }}
+              className='rounded  shadow p-3 ms-3'
+              md={1}
+            >
+              {product.bit} Bits
+            </Col>
+            <Col
+              style={{ background: '#d9230f', color: 'white' }}
+              className='rounded shadow  p-3 ms-3'
+              md={1}
+            >
+              {product.cores} Cores
+            </Col>
+            <Col
+              style={{ background: '#d9230f', color: 'white' }}
+              className='rounded shadow p-3 ms-3'
+              md={1}
+            >
+              {product.type}
+            </Col>
+          </Row>
+
+          <Row className='mt-5'>
             <Col md={6}>
               <Image
                 src={product.image}
                 alt={product.name}
                 fluid
-                style={{ height: "400px" }}
+                style={{ height: '400px' }}
               />
             </Col>
             <Col md={3}>
               <ListGroup variant='flush'>
                 <ListGroup.Item>
-                  <h3>{product.name}</h3>
+                  <h2>
+                    {product.model} {product.title}{' '}
+                    {product.model === 'Nvidia' ? (
+                      <Image src='/images/nvidia_32.png' className='ms-1' />
+                    ) : (
+                      <Image src='/images/amd32.png' className='ms-1' />
+                    )}
+                  </h2>
                 </ListGroup.Item>
                 <ListGroup.Item>
-                  <Rating
-                    value={product.rating}
-                    text={`${product.numReviews} reviews`}
-                  />
+                  <strong> Price: $ {product.price} </strong>
                 </ListGroup.Item>
-                <ListGroup.Item>Price: ${product.price}</ListGroup.Item>
-                <ListGroup.Item>
-                  Description: {product.description}
-                </ListGroup.Item>
+                <ListGroup.Item>Release Date: {product.date}</ListGroup.Item>
               </ListGroup>
             </Col>
             <Col md={3}>
@@ -114,51 +146,50 @@ const ProductScreen = ({ history, match }) => {
                       </Col>
                     </Row>
                   </ListGroup.Item>
-
                   <ListGroup.Item>
                     <Row>
-                      <Col>Status:</Col>
+                      <Col>Stats:</Col>
                       <Col>
-                        {product.countInStock > 0 ? "In Stock" : "Out Of Stock"}
+                        {product.countInStock > 0 ? 'In Stock' : 'Out Of Stock'}
                       </Col>
                     </Row>
                   </ListGroup.Item>
 
-                  {product.countInStock > 0 && (
-                    <ListGroup.Item>
-                      <Row>
-                        <Col>Qty</Col>
-                        <Col>
-                          <Form.Control
-                            as='select'
-                            value={qty}
-                            onChange={(e) => setQty(e.target.value)}
-                          >
-                            {[...Array(product.countInStock).keys()].map(
-                              (x) => (
-                                <option key={x + 1} value={x + 1}>
-                                  {x + 1}
-                                </option>
-                              )
-                            )}
-                          </Form.Control>
-                        </Col>
-                      </Row>
-                    </ListGroup.Item>
-                  )}
+                  <ListGroup.Item>
+                    <Row>
+                      <Col>Qty</Col>
+                      <Col>
+                        <Form.Control
+                          as='select'
+                          value={qty}
+                          onChange={(e) => setQty(e.target.value)}
+                        >
+                          {[...Array(product.countInStock).keys()].map((x) => (
+                            <option key={x + 1} value={x + 1}>
+                              {x + 1}
+                            </option>
+                          ))}
+                        </Form.Control>
+                      </Col>
+                    </Row>
+                  </ListGroup.Item>
 
                   <ListGroup.Item>
                     <Button
-                      onClick={addToCartHandler}
-                      className='btn-block'
                       type='button'
-                      disabled={product.countInStock === 0}
+                      className='col-12'
+                      onClick={addToCartHandler}
                     >
                       Add To Cart
                     </Button>
                   </ListGroup.Item>
                 </ListGroup>
               </Card>
+            </Col>
+          </Row>
+          <Row>
+            <Col md={6} className='mt-3'>
+              {product.description}
             </Col>
           </Row>
           <Row>
@@ -214,14 +245,14 @@ const ProductScreen = ({ history, match }) => {
                       <Button
                         disabled={loadingProductReview}
                         type='submit'
-                        variant='primary'
+                        className='mt-2'
                       >
                         Submit
                       </Button>
                     </Form>
                   ) : (
                     <Message>
-                      Please <Link to='/login'>sign in</Link> to write a review{" "}
+                      Please <Link to='/login'>sign in</Link> to write a review{' '}
                     </Message>
                   )}
                 </ListGroup.Item>

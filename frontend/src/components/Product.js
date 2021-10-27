@@ -1,36 +1,42 @@
-import React from "react";
-import { Link } from "react-router-dom";
-import { Card } from "react-bootstrap";
-import Rating from "./Rating";
+import React from 'react';
+import {  Card, Image, Button } from 'react-bootstrap';
+import { Link } from 'react-router-dom';
 
 const Product = ({ product }) => {
   return (
-    <Card className='my-3 p-3 rounded' style={{ height: "400px" }}>
-      <Link to={`/product/${product._id}`}>
+    <>
+      <Card
+        style={{ width: '18rem', boxShadow: '0 1px 4px rgba(0, 0, 0, 0.4)' }}
+        className='rounded '
+      >
         <Card.Img
-          src={product.image}
           variant='top'
-          style={{ height: "200px" }}
+          src={product.image}
+          style={{ height: '170px' }}
         />
-      </Link>
-
-      <Card.Body>
-        <Link to={`/product/${product._id}`}>
-          <Card.Title as='div'>
-            <strong>{product.name}</strong>
+        <Card.Body>
+          <Card.Title style={{ fontWeight: 'bold', fontSize: '1rem' }}>
+            {product.model} {product.title}{' '}
+            {product.model === 'Nvidia' ? (
+              <Image src='/images/nvidia_32.png' className='ms-1' />
+            ) : (
+              <Image src='/images/amd32.png' className='ms-1' />
+            )}
           </Card.Title>
-        </Link>
+          <Card.Text style={{ fontSize: '0.8rem' }}>
+            {product.description?.substring(0, 100)}
+          </Card.Text>
 
-        <Card.Text as='div'>
-          <Rating
-            value={product.rating}
-            text={`${product.numReviews} reviews`}
-          />
-        </Card.Text>
+          <Card.Text style={{ fontWeight: 'bold' }}>
+            $ {product.price}
+          </Card.Text>
 
-        <Card.Text as='h3'>${product.price}</Card.Text>
-      </Card.Body>
-    </Card>
+          <Link to={`/product/${product._id}`}>
+            <Button className='col-12'>View Product </Button>
+          </Link>
+        </Card.Body>
+      </Card>
+    </>
   );
 };
 

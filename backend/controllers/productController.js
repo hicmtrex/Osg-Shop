@@ -1,5 +1,5 @@
-import asyncHandler from "express-async-handler";
-import Product from "../models/productModel.js";
+import asyncHandler from 'express-async-handler';
+import Product from '../models/productModel.js';
 
 // @desc    Fetch all products
 // @route   GET /api/products
@@ -10,9 +10,9 @@ const getProducts = asyncHandler(async (req, res) => {
 
   const keyword = req.query.keyword
     ? {
-        name: {
+        title: {
           $regex: req.query.keyword,
-          $options: "i",
+          $options: 'i',
         },
       }
     : {};
@@ -35,7 +35,7 @@ const getProductById = asyncHandler(async (req, res) => {
     res.json(product);
   } else {
     res.status(404);
-    throw new Error("Product not found");
+    throw new Error('Product not found');
   }
 });
 
@@ -47,10 +47,10 @@ const deleteProduct = asyncHandler(async (req, res) => {
 
   if (product) {
     await product.remove();
-    res.json({ message: "Product removed" });
+    res.json({ message: 'Product removed' });
   } else {
     res.status(404);
-    throw new Error("Product not found");
+    throw new Error('Product not found');
   }
 });
 
@@ -59,15 +59,19 @@ const deleteProduct = asyncHandler(async (req, res) => {
 // @access  Private/Admin
 const createProduct = asyncHandler(async (req, res) => {
   const product = new Product({
-    name: "Sample name",
+    title: 'Sample name',
     price: 0,
     user: req.user._id,
-    image: "/images/sample.jpg",
-    brand: "Sample brand",
-    category: "Sample category",
+    image: '/images/sample.jpg',
+    vRam: 'Sample brand',
+    date: '2008',
+    model: 'NVIDIA',
+    bit: 128,
+    cores: 512,
+    type: 'GDDR5',
     countInStock: 0,
     numReviews: 0,
-    description: "Sample description",
+    description: 'Sample description',
   });
 
   const createdProduct = await product.save();
@@ -78,25 +82,40 @@ const createProduct = asyncHandler(async (req, res) => {
 // @route   PUT /api/products/:id
 // @access  Private/Admin
 const updateProduct = asyncHandler(async (req, res) => {
-  const { name, price, description, image, brand, category, countInStock } =
-    req.body;
+  const {
+    title,
+    price,
+    description,
+    image,
+    model,
+    vRam,
+    type,
+    cores,
+    bit,
+    date,
+    countInStock,
+  } = req.body;
 
   const product = await Product.findById(req.params.id);
 
   if (product) {
-    product.name = name;
+    product.title = title;
     product.price = price;
     product.description = description;
     product.image = image;
-    product.brand = brand;
-    product.category = category;
+    product.vRam = vRam;
+    product.type = type;
+    product.cores = cores;
+    product.bit = bit;
+    product.date = date;
+    product.model = model;
     product.countInStock = countInStock;
 
     const updatedProduct = await product.save();
     res.json(updatedProduct);
   } else {
     res.status(404);
-    throw new Error("Product not found");
+    throw new Error('Product not found');
   }
 });
 
@@ -115,7 +134,7 @@ const createProductReview = asyncHandler(async (req, res) => {
 
     if (alreadyReviewed) {
       res.status(400);
-      throw new Error("Product already reviewed");
+      throw new Error('Product already reviewed');
     }
 
     const review = {
@@ -134,10 +153,10 @@ const createProductReview = asyncHandler(async (req, res) => {
       product.reviews.length;
 
     await product.save();
-    res.status(201).json({ message: "Review added" });
+    res.status(201).json({ message: 'Review added' });
   } else {
     res.status(404);
-    throw new Error("Product not found");
+    throw new Error('Product not found');
   }
 });
 
