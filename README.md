@@ -1,4 +1,4 @@
-# ProShop eCommerce Platform
+# Old School Gaming Shop eCommerce Platform
 
 > eCommerce platform built with the MERN stack & Redux.
 
